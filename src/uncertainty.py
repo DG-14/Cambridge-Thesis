@@ -38,41 +38,6 @@ def build_cnn_model_with_dropout(input_shape, num_actions, learning_rate, dropou
     return model
 
 
-# simple CNN
-# def build_cnn_model_with_dropout(input_shape, num_actions, learning_rate, dropout_rate):
-#     """
-#     Function to build the CNN model in dqn_agent.py with active dropout.
-
-#     Args:
-#     - input_shape (tuple): Shape of the input images.
-#     - num_actions (int): Number of actions.
-#     - learning_rate (float): Learning rate for the optimizer.
-#     - dropout_rate (float): Dropout rate for the dropout layers.
-
-#     Returns:
-#     - tf.keras.Model: Bayesian CNN model.
-#     """
-
-#     inputs = tf.keras.Input(shape=input_shape)
-#     x = layers.Lambda(lambda layer: layer / 255)(inputs)
-#     x = layers.Conv2D(filters=32, kernel_size=(4, 4), strides=(2, 2), activation='relu',
-#                       kernel_initializer=initializers.VarianceScaling(scale=2.))(x)
-#     x = layers.Dropout(dropout_rate)(x)
-#     x = layers.MaxPool2D((2, 2))(x)
-#     x = layers.Conv2D(filters=16, kernel_size=(2, 2), strides=(1, 1), activation='relu',
-#                       kernel_initializer=initializers.VarianceScaling(scale=2.))(x)
-#     x = layers.Dropout(dropout_rate)(x)
-#     x = layers.MaxPool2D((2, 2))(x)
-#     x = layers.Flatten()(x)
-#     x = layers.Dense(128, activation='relu', kernel_initializer=initializers.VarianceScaling(scale=2.))(x)
-#     x = layers.Dropout(dropout_rate)(x)
-#     predictions = layers.Dense(num_actions, activation='softmax',
-#                                kernel_initializer=initializers.VarianceScaling(scale=2.))(x)
-#     model = tf.keras.Model(inputs=inputs, outputs=predictions)
-#     model.compile(optimizer=optimizers.Adam(learning_rate=learning_rate), loss='mse')
-#     return model
-
-
 # Calculate Total Uncertainty (σ_tot)
 def calculate_total_uncertainty(model, noisy_images_list, samples):
     predictions = []
