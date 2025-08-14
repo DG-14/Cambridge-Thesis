@@ -1,3 +1,5 @@
+# Normalise rewards by difficulty
+
 reward_scaling_stats = {
   "0": {
     "terminal_reward": {
@@ -78,65 +80,3 @@ def normalise_terminal(terminal_reward,difficulty):
     # return scaled_reward
 
     return terminal_reward
-# reward_scaling_stats = {
-#   "0": {
-#     "terminal_reward": {
-#       "mean": 0,
-#       "std": 1
-#     },
-#     "step_reward": {
-#       "mean": 0,
-#       "std": 1e-05
-#     }
-#   },
-#   "1": {
-#     "terminal_reward": {
-#       "mean": 0,
-#       "std": 1
-#     },
-#     "step_reward": {
-#       "mean": 0,
-#       "std": 1e-05
-#     }
-#   },
-#   "2": {
-#     "terminal_reward": {
-#       "mean": 0,
-#       "std": 1
-#     },
-#     "step_reward": {
-#       "mean": 0,
-#       "std": 1e-05
-#     }
-#   },
-#   "3": {
-#     "terminal_reward": {
-#       "mean": 0,
-#       "std": 1
-#     },
-#     "step_reward": {
-#       "mean": 0,
-#       "std": 1e-05
-#     }
-#   },
-#   "4": {
-#     "terminal_reward": {
-#       "mean": 0,
-#       "std": 1
-#     },
-#     "step_reward": {
-#       "mean": 0,
-#       "std": 1e-05
-#     }
-#   },
-#   "5": {
-#     "terminal_reward": {
-#       "mean": 0,
-#       "std": 1
-#     },
-#     "step_reward": {
-#       "mean": 0,
-#       "std": 1e-05
-#     }
-#   }
-# }
