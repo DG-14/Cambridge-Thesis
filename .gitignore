@@ -1,0 +1,66 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environment
+.env/
+.venv/
+env/
+venv/
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints
+
+# PyCharm/VSCode project files
+.idea/
+.vscode/
+
+# macOS, Windows, Linux system files
+.DS_Store
+Thumbs.db
+
+# Logs and outputs
+logs/*
+*.log
+config.json
+
+training_logs/*
+*.log
+config.json
+harm.csv
+*h5
+
+
+
+
+# Model and buffer saves
+models/
+*.h5
+*.pkl
+
+# TensorBoard events
+*.tfevents.*
+
+# CARLA simulator-generated cache
+CarlaUE4/Saved/
+CarlaUE4/Intermediate/
+CarlaUE4/Binaries/
+
+# Python cache files
+__pycache__/
+*.cache
+*.pyo
+*.pyc
+
+__pycache__/
+*.py[cod]
+
+
+
+# Temporary or backup files
+*.bak
+*.tmp
+
+# Checkpoint and saved weights (optional, if not using versioning)
+checkpoints/
