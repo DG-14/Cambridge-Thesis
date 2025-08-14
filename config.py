@@ -55,12 +55,7 @@ def get_args():
     parser.add_argument('--episodes-per-level', type=int, default=6000/6)
 
     parser.add_argument('--notes', type=str, default="n/a")
-
-
-
-    # Ethical Knob Arguement - TO REMOVE
     parser.add_argument('--knob-value', type=float, default=0.5, help='k ∈ {0.1, 0.25, 0.4, 0.5, 0.6, 0.75, 0.9}')
-
     parser.add_argument('--uncertainty-check', type=bool, default=False, help='uncertainty check during test phase')
     parser.add_argument('--sample-nets', type=int, default=5, help='number of sample networks during uncertainty test')
 
