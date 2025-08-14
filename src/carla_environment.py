@@ -9,6 +9,7 @@ import numpy as np
 import tensorflow as tf
 from collections import deque
 import transforms3d
+
 from src.waypoints import *
 from src.utilies import classify_actor_type, compute_actor_risks_in_cone, log_episode_metrics,get_at_risk_actors,is_actor_in_group, log_episode_summary_stats_csv
 from src.risk_models import ped_cyclists_injury_probability, car_passenger_injury_probability
@@ -180,8 +181,9 @@ class CarlaEnv:
                                    }
         
 
-        # self.seed = random.randint(100, 400)
-        self.seed = 42
+        # set seed either randomly or specifically for fair evaluation
+        self.seed = random.randint(100, 400)
+        # self.seed = 42
 
         self.state_buffer = deque([np.zeros((self.image_width, self.image_height), dtype=np.float32)
                                    for _ in range(self.history_length)], maxlen=self.history_length)
@@ -213,15 +215,6 @@ class CarlaEnv:
         elif self.curriculum_mode == 'tscl':
             self._generate_traffic_curriculum(evaluate)
 
-        # print("groups")
-        # print(self.pedestrians1)
-        # print(self.pedestrians2)
-        # print(self.motorcycles)
-        # print(self.bicycles)
-        # print(self.cars)
-        
-        # print("refs")
-        # print(self.start_actor_refs)
 
         # --- Collect all relevant actors for new scene ---
         # self.start_actor_refs = list(self.world.get_actors().filter('*walker*')) + self.motorcycles + self.bicycles + self.cars
@@ -842,37 +835,6 @@ class CarlaEnv:
         self.state_buffer.append(semantic_map)
 
 
-    # greyscale version
-    # def _get_camera_image(self, data):
-    #     """
-    #     Convert the image from the camera sensor to the state observation and add it to state buffer.
-    #     """
-    #     raw_data = np.frombuffer(data.raw_data, dtype=np.uint8)
-    #     raw_data = np.reshape(raw_data, (data.height, data.width, 4))
-    #     raw_data = raw_data[:, :, :3]  # Drop alpha channel (RGBA → RGB)
-
-    #     # Convert to Tensor before any TensorFlow operations
-    #     raw_tensor = tf.convert_to_tensor(raw_data, dtype=tf.uint8)
-
-    #     image = tf.image.rgb_to_grayscale(raw_tensor)
-    #     image = tf.image.resize(image, [self.image_width, self.image_height])
-    #     image = tf.cast(image, tf.float32)
-
-    #     # Safe squeeze
-    #     image = tf.squeeze(image, axis=-1)
-
-    #     # Convert back to NumPy if needed for buffer
-    #     image = image.numpy()
-
-    #     # ✅ Add this:
-    #     # image = np.expand_dims(image, axis=-1)  # Shape now (84, 84, 1)
-
-    #     # ✅ Add logging here
-    #     # print("Processed image shape:", image.shape)
-
-    #     self.state_buffer.append(image)
-
-
     def add_noise_to_image(self, image, variance=1.4):
         noise = np.random.normal(loc=0.0, scale=np.sqrt(variance), size=(4, 84, 84))
         noisy_image = image + noise
@@ -1027,13 +989,6 @@ class CarlaEnv:
                 actor_types[actor_type] += 1
             else:
                 actor_types[actor_type] = 1
-
-        # self.train_util_tracker["collisions"] = {
-        #     'total_collisions': total_collisions,
-        #     'average_speed': average_speed,
-        #     'actor_IDs' : actor_IDs,
-        #     'actor_types' : actor_types
-        #     }
 
 
         return {
@@ -1213,18 +1168,6 @@ class CarlaEnv:
             'step_reward_scaled': scaled_step_reward
         })
 
-
-        # want at each step to score based on:
-        # want to minise aggresive/excess movement
-        # total risk (want to minimse) - estimated harm * risk coefficient, 
-        # variance in risk (want to minimise) - estimated harm * risk coefficient
-        # Risk to the ego vehicle
-        # need step score to be quite small compared to terminal score
-
-        # In future maybe add some static obstacles
-
-        # print("Step Reward: " + str(step_reward))
-        # print("Scaled Step Reward: " + str(scaled_step_reward))
         
         return scaled_step_reward
 
@@ -1321,16 +1264,6 @@ class CarlaEnv:
                     # print("Static Collision: " + str(i) + " with prob: " + str(prob))
 
 
-            # print("Ego Prob: " + str(ego_prob))
-            # print("Other Prob: " + str(other_prob))
-            
-            # Old scoring: weight * weighted ego prob + weighted ego prob
-            # terminal_reward = -400 * ((sum(other_prob) * x) + (sum(ego_prob)*self.knob))  # eq. 11
-                    
-
-        # In this case, we want:
-        # the final harm to ego vehicle (minimise)
-        # final harm to actors (minimise)
 
         at_risk_ids = get_at_risk_actors(self.start_ego_pos, self.start_ego_heading, self.start_actor_data)
         collided_ids = set(self.collided_actor_ids)
@@ -1338,13 +1271,8 @@ class CarlaEnv:
         # Fair collision rate
         fair_collision_rate = len(collided_ids & at_risk_ids) / max(len(at_risk_ids), 1)
 
-        # print("Fair Collision Rate: " + str(fair_collision_rate*100) + "%")
 
-        # self.summary = log_episode_metrics(self.last_harm_metrics, self.episode,self.evaluate,fair_collision_rate,terminal_reward,ego_prob,other_prob)
         self.summary = log_episode_metrics(self.last_harm_metrics, self.episode,self.evaluate,fair_collision_rate,terminal_reward,ego_prob,other_prob,self.difficulty)
-        # print("Episode Summary: ")
-        # print(self.summary)
-        # self.episode_log.append(self.summary)
 
 
         if terminal_reward != 5 and terminal_reward != 2:
