@@ -176,7 +176,7 @@ def spawn_points():
                 carla.Rotation(pitch=0.0, yaw=0, roll=0.0)) for i in range(5)],
             'pedestrian_direction': [1, 0, 125]
         },
-        # Custom Interesctions
+        # Extended List of Intersections.
         # 'intersection8': {
         #     'ego_car': carla.Transform(carla.Location(x=40.00, y=random.uniform(25, 29), z=1.0),
         #                                carla.Rotation(pitch=0.0, yaw=90, roll=0.0)),
