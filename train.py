@@ -16,7 +16,7 @@ from src.utilies import intersection_ID_to_int, safe_for_json
 from src.uncertainty import build_cnn_model_with_dropout, calculate_total_uncertainty, calculate_nll, calculate_rmse, calculate_entropy
 
 
-
+# Baseline RL
 def train_dqn_agent_baseline(config):
     """
     Function to train a DQN agent in the CARLA environment.
@@ -226,6 +226,7 @@ def train_dqn_agent_baseline(config):
     agent.save_model(final_model_path)
     agent.save_replay_buffer(final_replay_buffer_path)
 
+# Fixed CL
 def train_dqn_agent_fixed(config):
     """
     Function to train a DQN agent in the CARLA environment.
@@ -477,6 +478,7 @@ def train_dqn_agent_fixed(config):
     agent.save_replay_buffer(final_replay_buffer_path)
 
 
+# UGCS
 def train_dqn_agent_adaptive(config):
     """
     Function to train a DQN agent in the CARLA environment.
@@ -895,21 +897,6 @@ def soft_reward_penalty(reward, r0=-10, k=5.0):
     return 1.0 / (1.0 + np.exp(k * (reward - r0)))
 
 
-
-# ===== TSCL (episode-by-episode sampling): softmax over reward-change slopes =====
-
-
-# If you already have a softmax helper elsewhere, feel free to reuse it
-# def softmax_temperature(x, temperature=0.3):s
-#     x = np.asarray(x, dtype=np.float64)
-#     x = x / max(temperature, 1e-12)
-#     x = x - np.max(x)            # numerical stability
-#     ex = np.exp(x)
-#     s = ex / np.sum(ex)
-#     if not np.all(np.isfinite(s)):  # degenerate guard
-#         s = np.ones_like(x) / len(x)
-#     return s
-
 def softmax_temperature(x, temperature=0.3, eps=1e-8):
     x = np.asarray(x, dtype=np.float64)
     if not np.all(np.isfinite(x)):
@@ -923,6 +910,7 @@ def softmax_temperature(x, temperature=0.3, eps=1e-8):
         return np.ones_like(x) / len(x)  # uniform fallback
     return ex / s
 
+# Gets TSCL slopes and LP
 def evaluate_agent_tscl_distribution(
     agent,
     env,
@@ -1030,7 +1018,7 @@ def evaluate_agent_tscl_distribution(
 
     return probs, progresses, mean_rewards
 
-
+# TSCL
 def train_dqn_agent_tscl(config):
     """
     Train with TSCL *episode-by-episode* sampling:
