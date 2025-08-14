@@ -1,8 +1,0 @@
-﻿Logging – separate excel
-code refactor
-new curriculum
-train two models
-collision history needs a good rework
-detach scoring from model
-Create multiple scores
-Change reward function
