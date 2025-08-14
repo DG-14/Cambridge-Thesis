@@ -6,8 +6,6 @@ from tensorflow.keras import layers, initializers, optimizers
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.callbacks import TensorBoard
 from collections import deque
-# import os
-# import datetime
 import pickle
 
 tf.keras.utils.disable_interactive_logging()
@@ -57,6 +55,7 @@ class ReplayBuffer:
         with open(filename, 'rb') as f:
             self.buffer = pickle.load(f)
 
+# CNN Model
 def build_cnn_model(input_shape, num_actions, learning_rate, dropout_rate=0.2):
     inputs = tf.keras.Input(shape=input_shape)
     x = layers.Lambda(lambda x: x / 255.0)(inputs)
@@ -87,37 +86,7 @@ def build_cnn_model(input_shape, num_actions, learning_rate, dropout_rate=0.2):
 
     return model
 
-
-# # simple CNN
-# def build_cnn_model(input_shape, num_actions, learning_rate):
-#     """
-#     Build a CNN model for Q-value approximation.
-
-#     Parameters:
-#     input_shape (tuple): Shape of the input state.
-#     num_actions (int): Number of possible actions.
-#     learning_rate (float): Learning rate for the optimizer.
-
-#     Returns:
-#     tf.keras.Model: The compiled CNN model.
-#     """
-#     inputs = tf.keras.Input(shape=input_shape)
-#     x = layers.Lambda(lambda layer: layer / 255)(inputs)
-#     x = layers.Conv2D(filters=32, kernel_size=(4, 4), strides=(2, 2), activation='relu',
-#                       kernel_initializer=initializers.VarianceScaling(scale=2.))(x)
-#     x = layers.MaxPool2D((2, 2))(x)
-#     x = layers.Conv2D(filters=16, kernel_size=(2, 2), strides=(1, 1), activation='relu',
-#                       kernel_initializer=initializers.VarianceScaling(scale=2.))(x)
-#     x = layers.MaxPool2D((2, 2))(x)
-#     x = layers.Flatten()(x)
-#     x = layers.Dense(128, activation='relu', kernel_initializer=initializers.VarianceScaling(scale=2.))(x)
-#     predictions = layers.Dense(num_actions, activation='linear',
-#                                kernel_initializer=initializers.VarianceScaling(scale=2.))(x)
-#     model = tf.keras.Model(inputs=inputs, outputs=predictions)
-#     model.compile(optimizer=optimizers.Adam(learning_rate=learning_rate), loss='mse')
-#     return model
-
-
+# DDQN Agent.
 class DQNAgent:
     """
     Deep Q-Network agent for training and interacting with the environment.
@@ -186,23 +155,7 @@ class DQNAgent:
         self.target_net.set_weights(self.policy_net.get_weights())
 
 
-    # def act(self, state):
-    #     """
-    #     Choose an action based on the current state.
-    #     Considers epsilon for exploration-exploitation trade-off.
-
-    #     Parameters:
-    #     state (np.array): The current state.
-
-    #     Returns:
-    #     int: The action to take.
-    #     """
-    #     if np.random.rand() <= self.epsilon:
-    #         return random.randrange(self.num_actions)
-    #     state = np.expand_dims(state, axis=0)
-    #     act_values = self.policy_net.predict(state)
-    #     return np.argmax(act_values[0])
-    
+    # return an action 
     def act(self, state):
         if np.random.rand() < self.epsilon:
             return np.random.randint(self.num_actions)
